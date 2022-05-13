@@ -37,9 +37,9 @@ def parseCode(code):
     com = toComment(t)
     tx = ('____' + t)[-4:]
     if not com is None:
-        return '[{}] ({})'.format(tx, com)
+        return '({}) <{}>'.format(tx, com)
     else:
-        return '[{}]'.format(tx)
+        return '({})'.format(tx)
 
 def blockBegin(code, arg):
     if code == '0':
@@ -80,8 +80,10 @@ def mainproc(f, wc, wv):
     t = None
     indent = 0
     vv = []
+    lno = 0
     for l in f:
         ll = line(l)
+        lno += 1
         if t is None:
             t = ll
             continue
@@ -108,7 +110,7 @@ def mainproc(f, wc, wv):
         idt = ' ' * (indent * 2)
         if cl:
             wc.write(idt + '}' + '\n')
-        wc.write(idt + code + ' ' + arg + '\n')
+        wc.write('[' + (' ' * 6 + str(lno))[-6:] + ']'+ idt + code + ' ' + arg + '\n')
         if be:
             wc.write(idt + '{' + '\n')
             indent += 1
