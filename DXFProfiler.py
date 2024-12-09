@@ -1,5 +1,8 @@
-
 import sys
+
+ENABLE_VERTFILE = False
+ENABLE_LINE = False
+
 
 class Vertex:
     def __init__(self):
@@ -110,21 +113,28 @@ def mainproc(f, wc, wv):
         idt = ' ' * (indent * 2)
         if cl:
             wc.write(idt + '}' + '\n')
-        wc.write('[' + (' ' * 6 + str(lno))[-6:] + ']'+ idt + code + ' ' + arg + '\n')
+        if ENABLE_LINE:
+            lx = (' ' * 6 + str(lno))[-6:]
+            wc.write(f'[{lx}]')
+        wc.write(idt + f'{code} {arg}\n')
         if be:
             wc.write(idt + '{' + '\n')
             indent += 1
 
-    for v in vv:
-        wv.write('v ' + str(v.x) + ' ' + str(v.y) + ' ' + '0' + '\n')
+    if wv:
+        for v in vv:
+            wv.write(f'v {v.x} {v.y} 0\n')
 
 def makeAuto(fileIn):
     com = fileIn + '_comment.txt'
     vf = fileIn + '_vert.txt'
     with open(fileIn) as f:
         with open(com, 'w') as wc:
-            with open(vf, 'w') as wv:
-                mainproc(f, wc, wv)
+            if ENABLE_VERTFILE:
+                with open(vf, 'w') as wv:
+                    mainproc(f, wc, wv)
+            else:
+                mainproc(f, wc, None)
 
 def makeArgs():
     for a in sys.argv:
@@ -133,5 +143,3 @@ def makeArgs():
         makeAuto(a)
 
 makeArgs()
-
-
