@@ -33,6 +33,7 @@ def toComment(code):
     if (n == 8): return 'Layer'
     if (n == 66): return 'ConnectFlag'
     if (n == 70): return 'ModeFlag'
+    if (n == 999): return 'Comment'
     return '?'
 
 def parseCode(code):
