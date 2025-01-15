@@ -1,7 +1,6 @@
 import sys
 
 ENABLE_VERTFILE = False
-ENABLE_LINE = False
 
 
 class Vertex:
@@ -80,7 +79,7 @@ def isVertex(rc, arg):
         if arg == 'POINT': return True
     return False
 
-def mainproc(f, wc, wv):
+def mainproc(f, wc, wcl, wv):
     t = None
     indent = 0
     vv = []
@@ -114,12 +113,17 @@ def mainproc(f, wc, wv):
         idt = ' ' * (indent * 2)
         if cl:
             wc.write(idt + '}' + '\n')
-        if ENABLE_LINE:
-            lx = (' ' * 6 + str(lno))[-6:]
-            wc.write(f'[{lx}]')
+            wcl.write(idt + '}' + '\n')
+
+        lx = (' ' * 6 + str(lno))[-6:]
+        wcl.write(f'[{lx}]')
+
         wc.write(idt + f'{code} {arg}\n')
+        wcl.write(idt + f'{code} {arg}\n')
+
         if be:
             wc.write(idt + '{' + '\n')
+            wcl.write(idt + '{' + '\n')
             indent += 1
 
     if wv:
@@ -128,14 +132,14 @@ def mainproc(f, wc, wv):
 
 def makeAuto(fileIn):
     com = fileIn + '_comment.txt'
+    comL = fileIn + '_commentLN.txt'
     vf = fileIn + '_vert.txt'
-    with open(fileIn) as f:
-        with open(com, 'w') as wc:
-            if ENABLE_VERTFILE:
-                with open(vf, 'w') as wv:
-                    mainproc(f, wc, wv)
-            else:
-                mainproc(f, wc, None)
+    with open(fileIn) as f, open(com, 'w') as wc, open(comL, 'w') as wcl:
+        if ENABLE_VERTFILE:
+            with open(vf, 'w') as wv:
+                mainproc(f, wc, wcl, wv)
+        else:
+            mainproc(f, wc, wcl, None)
 
 def makeArgs():
     for a in sys.argv:
